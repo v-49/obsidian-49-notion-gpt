@@ -1,0 +1,23 @@
+{
+  "name": "49-notion-gpt",
+  "version": "1.0.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/v-49/obsidian-49-notion-gpt.git"
+  },
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-obsidianmd": "^0.4.2",
+    "jsdom": "^26.0.0",
+    "obsidian": "^1.14.4",
+    "typescript": "^5.4.5"
+  }
+}

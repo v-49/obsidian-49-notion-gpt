@@ -1,0 +1,53 @@
+/* Project workbench only: inherit Obsidian's native interactions. */
+.project-progress-dashboard {
+  --reading-width: 96%;
+  --link-color: #315d51;
+  --link-color-hover: #214a3e;
+  --link-decoration: none;
+  --bases-kanban-card-background: var(--background-primary);
+  --bases-kanban-card-radius: 12px;
+  --bases-kanban-card-shadow: 0 3px 12px rgb(18 41 32 / 8%);
+  --bases-kanban-column-background: var(--background-secondary);
+  --bases-kanban-column-header-background: transparent;
+  --bases-kanban-column-radius: 14px;
+  --bases-kanban-column-box-shadow: none;
+  --bases-kanban-line-height: 26px;
+}
+.theme-dark .project-progress-dashboard {
+  --link-color: #a6d4be;
+  --link-color-hover: #d3eadc;
+  --bases-kanban-card-shadow: 0 3px 12px rgb(0 0 0 / 18%);
+}
+.project-progress-dashboard .metadata-container { display: none; }
+.project-progress-dashboard .markdown-preview-sizer { padding-top: 12px; }
+.project-progress-dashboard h1 { margin-bottom: 10px; font-size: 30px; font-weight: 650; }
+.project-progress-dashboard h1 + p { color: var(--text-muted); margin-bottom: 24px; }
+.project-progress-dashboard .bases-embed {
+  height: min(720px, calc(100vh - 270px));
+  min-height: 480px;
+  border: none;
+  border-radius: 0;
+}
+.project-progress-dashboard .bases-header { padding: 0 0 14px; }
+.project-progress-dashboard .bases-toolbar-view-text { font-weight: 650; }
+.project-progress-dashboard .bases-kanban-container { gap: 18px; padding: 8px 4px 16px; }
+.project-progress-dashboard .bases-kanban-column { border: none; }
+.project-progress-dashboard .bases-kanban-column-header { padding: 18px 16px 14px; font-size: 15px; }
+.project-progress-dashboard .bases-kanban-column-inner { gap: 14px; padding: 0 12px 12px; }
+.project-progress-dashboard .bases-kanban-card { padding-block: 14px; gap: 9px; }
+.project-progress-dashboard .bases-kanban-card-label { display: block; padding-inline: 14px; font-size: 11px; color: var(--text-muted); line-height: 17px; }
+.project-progress-dashboard .bases-kanban-card-property.mod-title .bases-kanban-card-label { display: none; }
+.project-progress-dashboard .bases-kanban-card-property.mod-title .bases-kanban-card-line { font-size: 16px; font-weight: 650; }
+.project-progress-dashboard .bases-kanban-card-line { font-size: 13px; }
+.project-progress-dashboard .bases-kanban-card-property[data-property="note.下一步"] .bases-rendered-value { color: var(--link-color); font-weight: 600; }
+.project-progress-dashboard .bases-kanban-card-property[data-property="formula.复查提示"] .bases-rendered-value { color: var(--text-muted); font-size: 12px; }
+.project-progress-dashboard .bases-kanban-card a,
+.project-progress-dashboard .bases-cards-item a { text-decoration: none; }
+.project-progress-dashboard .bases-cards-item { border-radius: 12px; }
+.project-progress-dashboard .bases-cards-label { display: block; font-size: 11px; }
+.project-progress-dashboard blockquote { font-size: 12px; color: var(--text-muted); border: none; background: transparent; padding: 0; margin-top: 14px; }
+@media (max-width: 760px) {
+  .project-progress-dashboard { --reading-width: 100%; }
+  .project-progress-dashboard .bases-embed { min-height: 420px; }
+  .project-progress-dashboard h1 { font-size: 26px; }
+}

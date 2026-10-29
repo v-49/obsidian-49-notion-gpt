@@ -1,0 +1,87 @@
+/* Keep the native editor, selection handles and theme. Only resized tables change. */
+table.ntr-fixed {
+  --table-column-min-width: 0;
+  table-layout: fixed !important;
+  width: var(--ntr-width) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+table.ntr-fixed > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  min-width: 0 !important;
+  width: auto !important;
+  overflow-wrap: anywhere;
+}
+table.ntr-fixed .table-cell-wrapper {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+table.ntr-fixed :is(img, video) { max-width: 100%; }
+.ntr-overlay {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  /* Obsidian marks body siblings after .app-container as no-drag. A full-screen
+     box therefore disables native title-bar dragging even with pointer-events:none. */
+  -webkit-app-region: initial !important;
+  z-index: 20;
+  pointer-events: none;
+  contain: layout style;
+}
+.ntr-handle {
+  position: absolute;
+  width: 12px;
+  padding: 0;
+  margin: 0;
+  pointer-events: auto;
+  -webkit-app-region: no-drag;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+.ntr-handle::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 5px;
+  width: 2px;
+  background: var(--text-faint, #888);
+  opacity: 0.25;
+}
+.ntr-handle:is(:hover, :focus-visible, .ntr-dragging)::after {
+  background: var(--interactive-accent, #7852dc);
+  opacity: 1;
+}
+.ntr-handle:focus-visible {
+  outline: 2px solid var(--interactive-accent, #7852dc);
+  outline-offset: 2px;
+}
+.ntr-width-label {
+  position: fixed;
+  padding: 3px 7px;
+  border-radius: var(--radius-s, 4px);
+  background: var(--background-primary, #fff);
+  color: var(--text-normal, #222);
+  border: 1px solid var(--background-modifier-border, #bbb);
+  font: var(--font-ui-small, 13px) var(--font-interface, sans-serif);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+body.ntr-resizing, body.ntr-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+.ntr-measure {
+  position: fixed !important;
+  left: -100000px !important;
+  top: 0 !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  white-space: pre !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

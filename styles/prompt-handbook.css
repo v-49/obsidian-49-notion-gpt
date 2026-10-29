@@ -1,0 +1,81 @@
+/* Typora-like reading surface, scoped to the prompt handbook. */
+.prompt-handbook {
+  --prompt-font: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --prompt-ink: var(--text-normal);
+  --prompt-surface: var(--background-secondary);
+  --code-background: var(--prompt-surface);
+  font-family: var(--prompt-font);
+}
+
+.theme-light .prompt-handbook {
+  --prompt-ink: #262626;
+  --prompt-surface: #f6f6f6;
+}
+
+.prompt-handbook .metadata-container {
+  display: none;
+}
+
+.prompt-handbook .cm-content,
+.prompt-handbook .cm-line,
+.prompt-handbook pre,
+.prompt-handbook pre code {
+  font-family: var(--prompt-font) !important;
+  color: var(--prompt-ink);
+}
+
+/* The handbook uses level-two headings as prompt titles. */
+.prompt-handbook .cm-line.HyperMD-header-2,
+.prompt-handbook h2 {
+  font-family: var(--prompt-font) !important;
+  font-size: 1.65em !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: var(--prompt-ink) !important;
+}
+
+.prompt-handbook .cm-line.HyperMD-header-2 {
+  padding-block-start: 1.2rem !important;
+  padding-block-end: 0.35rem !important;
+}
+
+.prompt-handbook h2 {
+  margin-block: 1.7rem 0.85rem !important;
+  border: 0 !important;
+}
+
+/* Plain prompt text keeps Typora's compact rhythm and generous side inset. */
+.prompt-handbook .cm-line.HyperMD-codeblock:not(.HyperMD-codeblock-begin):not(.HyperMD-codeblock-end) {
+  font-size: 1em !important;
+  line-height: 1.34 !important;
+  padding-inline: 2rem !important;
+  background: var(--prompt-surface);
+}
+
+.prompt-handbook .cm-line.HyperMD-codeblock:has(> br) {
+  line-height: 0.7 !important;
+  min-height: 0.7em !important;
+  padding-block: 0 !important;
+}
+
+.prompt-handbook pre {
+  margin-block: 0.9rem;
+  padding: 0.25rem 2rem 0.9rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--prompt-surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.prompt-handbook pre code {
+  font-size: 1em !important;
+  line-height: 1.34 !important;
+  white-space: pre-wrap;
+}
+
+/* Live Preview hides inactive Markdown fences; Source mode keeps them visible. */
+:is(.prompt-handbook.is-live-preview, .prompt-handbook .is-live-preview) .cm-line.HyperMD-codeblock-begin:not(.cm-active),
+:is(.prompt-handbook.is-live-preview, .prompt-handbook .is-live-preview) .cm-line.HyperMD-codeblock-end:not(.cm-active) {
+  display: none !important;
+}
