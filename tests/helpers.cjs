@@ -13,7 +13,13 @@ function harness(){
     unload(){this.onunload?.();this.children.forEach(c=>c.unload());this.disposers.splice(0).reverse().forEach(f=>f());this._loaded=false;}
   }
   class Plugin extends Component {}
-  const api={Component,Plugin,MarkdownView:class{},Notice:class{constructor(text){notices.push(text);}},setIcon:(el,icon)=>el.dataset.icon=icon,
+  const menus=[],eventMenus=new WeakMap();
+  class Menu {
+    constructor(){this.items=[];menus.push(this);}
+    static forEvent(event){let menu=eventMenus.get(event);if(!menu){menu=new Menu();eventMenus.set(event,menu);}return menu;}
+    addItem(callback){const item={setSection(v){this.section=v;return this;},setTitle(v){this.title=v;return this;},setIcon(v){this.icon=v;return this;},setChecked(v){this.checked=v;return this;},onClick(v){this.callback=v;return this;}};callback(item);this.items.push(item);return this;}
+  }
+  const api={Component,Plugin,Menu,MarkdownView:class{},Notice:class{constructor(text){notices.push(text);}},setIcon:(el,icon)=>el.dataset.icon=icon,
     htmlToMarkdown:html=>html};
   const root=path.resolve(__dirname,'../src');
   function load(name){
@@ -39,6 +45,6 @@ function harness(){
     const view={containerEl:el,contentEl:el,file:{path},getMode:()=> 'source',editor:{getValue:()=>''},addAction(){return el.appendChild(window.document.createElement('button'));}};
     return {view,getRoot:()=>split,setGroup(){this.group=null;}};
   }
-  return {window,owner,workspace,load,notices,events,ready,commands,leaf};
+  return {window,owner,workspace,load,notices,events,ready,commands,leaf,Menu,menus};
 }
 module.exports={harness};

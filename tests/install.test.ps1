@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 $project = Split-Path -Parent $PSScriptRoot
-$fixture = Join-Path $project 'dist\install-test-vault'
+$fixture = Join-Path $project ('dist\install-test-vault-' + [guid]::NewGuid().ToString('N'))
 $config = Join-Path $fixture '.obsidian'
 New-Item -ItemType Directory -Path (Join-Path $config 'plugins\native-table-resize'),(Join-Path $config 'snippets') -Force | Out-Null
 $utf8 = [Text.UTF8Encoding]::new($false)
@@ -13,7 +13,11 @@ if (($enabled -join ',') -ne 'other-plugin,fortynine-notion-gpt') { throw 'Enabl
 $appearance = Get-Content -LiteralPath (Join-Path $config 'appearance.json') -Raw | ConvertFrom-Json
 if ($appearance.baseFontSize -ne 18 -or ($appearance.enabledCssSnippets -join ',') -ne 'custom') { throw 'Appearance preservation failed' }
 if (!(Test-Path -LiteralPath (Join-Path $first.Backup 'native-table-resize\data.json'))) { throw 'Backup missing' }
+if (Test-Path -LiteralPath (Join-Path $config 'plugins\native-table-resize')) { throw 'Old community-link entry still visible' }
+if (!(Test-Path -LiteralPath (Join-Path $first.Backup 'inactive-plugins\native-table-resize\data.json'))) { throw 'Archived plugin data missing' }
 $dataFile = Join-Path $config 'plugins\fortynine-notion-gpt\data.json'
+$initialData = Get-Content -LiteralPath $dataFile -Raw | ConvertFrom-Json
+if ($initialData.tables.files.'example.md'.sample[0] -ne 100) { throw 'Legacy data was not migrated before archiving' }
 [IO.File]::WriteAllText($dataFile,'{"version":1,"tables":{"files":{"saved.md":{}}}}',$utf8)
 $saved = Get-Content -LiteralPath $dataFile -Raw
 $second = & (Join-Path $project 'scripts\install.ps1') -VaultPath $fixture | ConvertFrom-Json

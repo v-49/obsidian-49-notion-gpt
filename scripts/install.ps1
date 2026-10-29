@@ -33,9 +33,22 @@ foreach ($name in @('wider-note','prompt-handbook-code','project-progress-dashbo
   if (Test-Path -LiteralPath $file) { Copy-Item -LiteralPath $file -Destination (Join-Path $backup "$name.css") }
 }
 $utf8 = [Text.UTF8Encoding]::new($false)
+$moved = @()
 try {
   New-Item -ItemType Directory -Path $target -Force | Out-Null
   foreach ($name in @('manifest.json','main.js','styles.css')) { Copy-Item -LiteralPath (Join-Path $payload $name) -Destination (Join-Path $target $name) -Force }
+  $dataFile = Join-Path $target 'data.json'
+  if (!(Test-Path -LiteralPath $dataFile)) {
+    $unifiedData = Join-Path $configRoot 'plugins\49-notion-gpt\data.json'
+    $tableData = Join-Path $configRoot 'plugins\native-table-resize\data.json'
+    if (Test-Path -LiteralPath $unifiedData) { Copy-Item -LiteralPath $unifiedData -Destination $dataFile }
+    elseif (Test-Path -LiteralPath $tableData) {
+      $tables = Get-Content -LiteralPath $tableData -Raw | ConvertFrom-Json
+      if ($tables.version -eq 1 -and $tables.files) {
+        [IO.File]::WriteAllText($dataFile, (@{version=1;tables=$tables} | ConvertTo-Json -Depth 64), $utf8)
+      }
+    }
+  }
   $enabledFile = Join-Path $configRoot 'community-plugins.json'
   $enabled = if ($existed['community-plugins.json']) { @(Get-Content -LiteralPath $enabledFile -Raw | ConvertFrom-Json) } else { @() }
   $enabled = @($enabled | Where-Object { $_ -notin @('compact-rich-paste','relative-scroll-lock','native-table-resize','49-notion-gpt','fortynine-notion-gpt') }) + @('fortynine-notion-gpt')
@@ -45,10 +58,26 @@ try {
   $snippets = @($appearance.enabledCssSnippets | Where-Object { $_ -and $_ -notin @('wider-note','prompt-handbook-code','project-progress-dashboard') })
   $appearance | Add-Member -NotePropertyName enabledCssSnippets -NotePropertyValue $snippets -Force
   [IO.File]::WriteAllText($appearanceFile, ($appearance | ConvertTo-Json -Depth 32), $utf8)
+  # Keep superseded local IDs out of the installed-plugin list, where their
+  # built-in community links still point to a nonexistent entry. Preserve all
+  # code and state in this installation's backup instead of deleting them.
+  $inactive = Join-Path $backup 'inactive-plugins'
+  New-Item -ItemType Directory -Path $inactive -Force | Out-Null
+  $configPrefix = [IO.Path]::GetFullPath($configRoot) + [IO.Path]::DirectorySeparatorChar
+  foreach ($legacy in @('compact-rich-paste','relative-scroll-lock','native-table-resize','49-notion-gpt')) {
+    $legacySource = [IO.Path]::GetFullPath((Join-Path $configRoot "plugins\$legacy"))
+    $legacyTarget = [IO.Path]::GetFullPath((Join-Path $inactive $legacy))
+    if (!$legacySource.StartsWith($configPrefix,[StringComparison]::OrdinalIgnoreCase) -or !$legacyTarget.StartsWith($configPrefix,[StringComparison]::OrdinalIgnoreCase)) { throw '旧插件归档路径不在仓库配置目录中。' }
+    if (Test-Path -LiteralPath $legacySource -PathType Container) {
+      Move-Item -LiteralPath $legacySource -Destination $legacyTarget
+      $moved += @{Source=$legacySource;Target=$legacyTarget}
+    }
+  }
 } catch {
+  foreach ($entry in $moved) { Move-Item -LiteralPath $entry.Target -Destination $entry.Source }
   foreach ($name in $configNames) {
     if ($existed[$name]) { Copy-Item -LiteralPath (Join-Path $backup $name) -Destination (Join-Path $configRoot $name) -Force }
   }
   throw
 }
-[pscustomobject]@{ Plugin=$meta.name; Version=$meta.version; InstalledTo=$target; Backup=$backup; Status='已安装；重启 Obsidian 后加载。旧插件和样式文件已保留、仅停用。' } | ConvertTo-Json
+[pscustomobject]@{ Plugin=$meta.name; Version=$meta.version; InstalledTo=$target; Backup=$backup; Status='已安装；重启 Obsidian 后加载。旧插件已归档到备份，旧样式已停用。' } | ConvertTo-Json

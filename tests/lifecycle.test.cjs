@@ -5,7 +5,7 @@ test('unified plugin imports old table widths once and owns all registrations',a
  const legacy={version:1,files:{'example.md':{'["A|B",0]':[123,234]}}};let reads=0,saved;
  p.loadData=async()=>null;p.saveData=async data=>{saved=data;};p.app.vault.adapter={exists:async()=>true,read:async()=>{reads++;return JSON.stringify(legacy);}};
  for(const key of ['addCommand','addRibbonIcon','addStatusBarItem','registerMarkdownPostProcessor'])p[key]=h.owner[key];
- await p.load();await Promise.resolve();assert.equal(reads,1);assert.equal(JSON.stringify(saved.tables),JSON.stringify(legacy));assert.equal(p.children.length,3);assert.equal(new Set(h.commands.map(c=>c.id)).size,h.commands.length);assert.ok(h.commands.every(c=>/^(tables|scroll)-/.test(c.id)));
+ await p.load();await Promise.resolve();assert.equal(reads,1);assert.equal(JSON.stringify(saved.tables),JSON.stringify(legacy));assert.equal(p.children.length,4);assert.equal(new Set(h.commands.map(c=>c.id)).size,h.commands.length);assert.ok(h.commands.every(c=>/^(tables|scroll)-/.test(c.id)));
  h.ready.forEach(f=>f());p.unload();assert.equal(h.window.document.querySelectorAll('.ntr-overlay,.relative-scroll-lock-status,.relative-scroll-lock-ribbon').length,0);assert.ok(h.events.every(e=>e.off));
 });
 test('unloading while table data is loading does not attach listeners later',async()=>{

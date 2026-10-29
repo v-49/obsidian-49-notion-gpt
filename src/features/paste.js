@@ -1,76 +1,7 @@
 const { htmlToMarkdown } = require("obsidian");
 const { Feature } = require('../feature');
 
-// ChatGPT's rendered answers use semantic data attributes on spans, rather
-// than <strong>. Convert those explicit marks before Obsidian's HTML converter.
-function normalizeRichHtml(html) {
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  let changed = false;
-  // Citation popovers are web controls, not part of the quoted prose. Do not
-  // strip real hyperlinks or matching words occurring in ordinary paragraphs.
-  for (const control of doc.body.querySelectorAll('[data-d-component="popover-trigger"][role="button"]')) {
-    if (control.querySelector('[data-d-component="badge"] [data-d-component="favicon"]') &&
-        !control.querySelector('a[href]')) {
-      control.remove();
-      changed = true;
-    }
-  }
-  for (const el of doc.body.querySelectorAll("span, b, i")) {
-    if (el.closest("pre, code, svg, math")) continue;
-    const weight = el.style.fontWeight;
-    const strong = el.hasAttribute("data-d-default-strong") ||
-      ["bold", "semibold"].includes(el.getAttribute("data-d-weight")) ||
-      weight === "bold" || Number.parseInt(weight, 10) >= 600;
-    const emphasis = el.hasAttribute("data-d-default-em") || el.style.fontStyle === "italic";
-    if (strong && !el.closest("strong")) {
-      const mark = doc.createElement("strong");
-      mark.append(...el.childNodes);
-      el.append(mark);
-      changed = true;
-    }
-    if (emphasis && !el.closest("em")) {
-      const mark = doc.createElement("em");
-      mark.append(...el.childNodes);
-      el.append(mark);
-      changed = true;
-    }
-  }
-  // Represent bordered web content with editable native Obsidian callouts.
-  // Structural HTML survives the native image-import path as well as the
-  // direct converter; no custom source-text placeholders are required.
-  for (const box of [...doc.body.querySelectorAll('[data-d-component="box"][data-d-has-border]')].reverse()) {
-    if (box.closest('pre, code, svg, math') || !box.textContent.trim()) continue;
-    const card = doc.createElement('blockquote');
-    const marker = doc.createElement('p');
-    marker.textContent = '[!web-card]';
-    card.append(marker);
-    let row = null;
-    for (const child of [...box.childNodes]) {
-      if (child.nodeType !== 1) { (row || card).append(child); continue; }
-      if (child.matches('[data-d-component="divider"]')) {
-        card.append(doc.createElement('hr'));
-        row = null;
-      } else if (child.matches('[data-d-component="row"]') && child.querySelector('[data-d-component="icon"]')) {
-        const icon = child.querySelector('[data-d-component="icon"]');
-        const lucide = [...icon.classList].find(name => /^lucide-[a-z-]+$/.test(name));
-        // This renderer also has a filled search icon without a named class.
-        const search = icon.querySelector('path')?.getAttribute('d')?.startsWith('M10.875 4.5');
-        const name = lucide ? lucide.slice(7) : search ? 'search' : 'info';
-        icon.remove();
-        row = doc.createElement('blockquote');
-        const heading = doc.createElement('p');
-        heading.textContent = `[!web-row|${name}] ${child.textContent.trim().replace(/\s+/g, ' ')}`;
-        row.append(heading);
-        card.append(row);
-      } else {
-        (row || card).append(child);
-      }
-    }
-    box.replaceWith(card);
-    changed = true;
-  }
-  return { html: changed ? doc.body.innerHTML : html, changed };
-}
+const { normalizeRichHtml } = require('../rich-html');
 
 // Tighten only complete, flat, single-line lists. Nested items and continuation
 // paragraphs are left intact, including indented code and deliberate paragraphs.

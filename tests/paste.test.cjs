@@ -1,5 +1,19 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {harness}=require('./helpers.cjs');
+test('stripped web Copy citation badges disappear while prose and links survive',()=>{
+ const h=harness(),{normalizeRichHtml:n}=h.load('features/paste');
+ const badge=(label,count='')=>`<span><span><span><div><span><div></div></span><span><span>${label}</span></span>${count?`<span><span>${count}</span></span>`:''}</div></span></span></span>`;
+ const html=`<p>规范正文。${badge('全国标准信息公共服务平台','+1')}</p><p>研究正文。${badge('World Bank Group')}</p><p>全国标准信息公共服务平台+1 是这里的正文。</p><a href="https://example.com">World Bank Group</a><pre><code>${badge('代码示例')}</code></pre>`;
+ const doc=new h.window.DOMParser().parseFromString(n(html).html,'text/html');
+ assert.equal(doc.body.textContent.includes('规范正文。全国'),false);
+ assert.equal(doc.body.textContent.includes('研究正文。World'),false);
+ assert.match(doc.body.textContent,/全国标准信息公共服务平台\+1 是这里的正文/);
+ assert.equal(doc.querySelector('a').textContent,'World Bank Group');
+ assert.match(doc.querySelector('code').textContent,/代码示例/);
+ assert.equal(n(badge('真实链接').replace('真实链接','<a href="https://example.com">真实链接</a>')).changed,false);
+ assert.equal(n(badge('普通组件').replace('<div></div>','<div>内容</div>')).changed,false);
+ assert.equal(n(badge('普通组件','正文')).changed,false);
+});
 test('preserves emphasis, removes only source controls and retains links',()=>{
  const h=harness(),{normalizeRichHtml:normalize}=h.load('features/paste');
  const html='<p>World Bank Group <span data-d-default-strong>重点</span></p><span data-d-component="popover-trigger" role="button"><span data-d-component="badge"><span data-d-component="favicon"></span>PMC</span></span><a href="https://example.com">PMC</a><code><span data-d-default-strong>code</span></code>';

@@ -1,22 +1,16 @@
-## 49 Notion GPT Style 1.0.2
+## 49 Notion GPT Style 1.1.2
 
-Initial public release of the unified desktop plugin.
+Fixes citation labels that still appeared after pasting from the web Copy button. The exporter strips the attributes recognized by earlier versions; this release additionally recognizes its narrow exported badge structure and retains ordinary prose, links, tables and code.
 
-- Reading and editing typography, lists, quotes, and table spacing.
-- Rich-text paste fixes for emphasis, citation-button debris, and native editable web cards.
-- Native Markdown table-column resizing with local width memory.
-- Relative scrolling for two side-by-side notes, with Alt for temporary independent movement.
-- Silent startup and scroll-lock controls that hide outside a valid two-note layout.
-- Includes scoped prompt-handbook, project-dashboard, and folder styles.
+Includes standalone image alignment from 1.1.0, the optional source-copy browser helper, and installer migration that archives superseded local plugin IDs with their data and backups. Core features remain reading layout, editable web cards, native table-column resizing and relative scroll lock.
 
-Requires Obsidian 1.14.0 or later on desktop. See the README for scope and privacy details.
+The Obsidian plugin cannot recover emphasis or diagrams already removed by a website exporter. The optional browser helper operates at the source; refresh existing ChatGPT tabs after enabling it. It is not installed automatically with the Obsidian plugin.
 
-### Install
+Requires Obsidian 1.14.0+ on desktop. Update main.js, styles.css and manifest.json from this release in .obsidian/plugins/fortynine-notion-gpt, keeping data.json, then reload the plugin. The Windows ZIP includes the migration installer and source; it excludes private notes and test captures.
 
-Download `main.js`, `manifest.json`, and `styles.css` from this release into `<vault>/.obsidian/plugins/fortynine-notion-gpt/`, restart Obsidian, then enable **49 Notion GPT Style**.
+### Validation and known limitations
 
-The directory-compatible plugin ID is `fortynine-notion-gpt`. When migrating from the local `49-notion-gpt` package, disable the old entry; its table-width data is imported automatically. Old data is retained.
+24 automated tests, ESLint and isolated Windows installation/upgrade checks passed. A captured clipboard sample preserved all other text and four tables after removing two citation badges. The affected user reports the residue gone after restarting Obsidian.
 
-The ZIP is an optional Windows migration bundle with installer and source. Keep any local `data.json` when updating.
-
-Validation: 14 regression tests passed, official Obsidian ESLint checks passed with zero warnings, and the runtime dependency audit reported zero vulnerabilities. Community-directory listing is subject to its separate review.
+- [#1: Upstream copy-format loss](https://github.com/v-49/obsidian-49-notion-gpt/issues/1) remains documented; remaining visual differences are accepted, with no additional local reconstruction planned. The optional browser helper is experimental, not an end-to-end verified guarantee.
+- [#2: Remaining desktop interaction checks](https://github.com/v-49/obsidian-49-notion-gpt/issues/2) tracks the outstanding verification work separately from implemented features.

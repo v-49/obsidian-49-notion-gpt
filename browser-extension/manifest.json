@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "49 ChatGPT Copy Fix",
+  "version": "1.1.2",
+  "description": "Preserve emphasis, diagrams and cards when copying ChatGPT answers into 49 Notion GPT Style.",
+  "permissions": [
+    "clipboardWrite"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

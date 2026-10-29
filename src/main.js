@@ -2,6 +2,7 @@ const { Plugin, Notice } = require('obsidian');
 const Paste = require('./features/paste');
 const ScrollLock = require('./features/scroll-lock');
 const TableResize = require('./features/table-resize');
+const ImageAlignment = require('./features/image-align');
 
 module.exports = class FortyNineSuite extends Plugin {
   async onload() {
@@ -31,6 +32,7 @@ module.exports = class FortyNineSuite extends Plugin {
     this.addChild(new Paste(this, 'paste'));
     this.addChild(new ScrollLock(this, 'scroll'));
     this.addChild(new TableResize(this, 'tables'));
+    this.addChild(new ImageAlignment(this, 'images'));
   }
 
   saveFeature(key, data) {
