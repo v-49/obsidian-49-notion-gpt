@@ -3,16 +3,16 @@ $ErrorActionPreference = 'Stop'
 $vaultRoot = (Resolve-Path -LiteralPath $VaultPath).Path
 $configRoot = Join-Path $vaultRoot '.obsidian'
 if (!(Test-Path -LiteralPath $configRoot -PathType Container)) { throw '请选择已有的 Obsidian 仓库目录，目录中应包含 .obsidian。' }
-$payload = Join-Path $PSScriptRoot '49-notion-gpt'
+$payload = Join-Path $PSScriptRoot 'fortynine-notion-gpt'
 if (!(Test-Path -LiteralPath (Join-Path $payload 'manifest.json'))) {
-  $payload = Join-Path $PSScriptRoot '..\dist\49-notion-gpt'
+  $payload = Join-Path $PSScriptRoot '..\dist\fortynine-notion-gpt'
 }
 foreach ($name in @('manifest.json','main.js','styles.css')) {
   if (!(Test-Path -LiteralPath (Join-Path $payload $name) -PathType Leaf)) { throw "安装包不完整：$name" }
 }
 $meta = Get-Content -LiteralPath (Join-Path $payload 'manifest.json') -Raw | ConvertFrom-Json
-if ($meta.id -ne '49-notion-gpt') { throw '插件标识不匹配。' }
-$target = [IO.Path]::GetFullPath((Join-Path $configRoot 'plugins\49-notion-gpt'))
+if ($meta.id -ne 'fortynine-notion-gpt') { throw '插件标识不匹配。' }
+$target = [IO.Path]::GetFullPath((Join-Path $configRoot 'plugins\fortynine-notion-gpt'))
 if (!$target.StartsWith([IO.Path]::GetFullPath($configRoot) + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw '目标目录不在仓库配置中。' }
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 $backup = Join-Path $configRoot "backups\49-notion-gpt-$stamp"
@@ -24,7 +24,7 @@ foreach ($name in $configNames) {
   $existed[$name] = Test-Path -LiteralPath $file
   if ($existed[$name]) { Copy-Item -LiteralPath $file -Destination (Join-Path $backup $name) }
 }
-foreach ($legacy in @('compact-rich-paste','relative-scroll-lock','native-table-resize','49-notion-gpt')) {
+foreach ($legacy in @('compact-rich-paste','relative-scroll-lock','native-table-resize','49-notion-gpt','fortynine-notion-gpt')) {
   $folder = Join-Path $configRoot "plugins\$legacy"
   if (Test-Path -LiteralPath $folder) { Copy-Item -LiteralPath $folder -Destination (Join-Path $backup $legacy) -Recurse }
 }
@@ -38,7 +38,7 @@ try {
   foreach ($name in @('manifest.json','main.js','styles.css')) { Copy-Item -LiteralPath (Join-Path $payload $name) -Destination (Join-Path $target $name) -Force }
   $enabledFile = Join-Path $configRoot 'community-plugins.json'
   $enabled = if ($existed['community-plugins.json']) { @(Get-Content -LiteralPath $enabledFile -Raw | ConvertFrom-Json) } else { @() }
-  $enabled = @($enabled | Where-Object { $_ -notin @('compact-rich-paste','relative-scroll-lock','native-table-resize','49-notion-gpt') }) + @('49-notion-gpt')
+  $enabled = @($enabled | Where-Object { $_ -notin @('compact-rich-paste','relative-scroll-lock','native-table-resize','49-notion-gpt','fortynine-notion-gpt') }) + @('fortynine-notion-gpt')
   [IO.File]::WriteAllText($enabledFile, (ConvertTo-Json -InputObject $enabled), $utf8)
   $appearanceFile = Join-Path $configRoot 'appearance.json'
   $appearance = if ($existed['appearance.json']) { Get-Content -LiteralPath $appearanceFile -Raw | ConvertFrom-Json } else { [pscustomobject]@{} }

@@ -1,7 +1,7 @@
 {
-  "id": "49-notion-gpt",
+  "id": "fortynine-notion-gpt",
   "name": "49 Notion GPT Style",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "minAppVersion": "1.14.0",
   "description": "Refine reading layout, preserve rich-text paste and web cards, resize table columns, and synchronize scrolling between two note panes.",
   "author": "49",

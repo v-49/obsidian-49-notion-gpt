@@ -20,7 +20,7 @@ Requires **Obsidian 1.14.0 or later on desktop**. Mobile is not currently suppor
 The first community-directory submission is pending review. Until approval, install from [GitHub Releases](https://github.com/v-49/obsidian-49-notion-gpt/releases).
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from the same release.
-2. Place them in `<vault>/.obsidian/plugins/49-notion-gpt/` (use your configured settings directory if different).
+2. Place them in `<vault>/.obsidian/plugins/fortynine-notion-gpt/` (use your configured settings directory if different).
 3. Restart Obsidian, then enable **49 Notion GPT Style** in Community plugins.
 
 Updates replace those three files. Keep your local `data.json`.
@@ -50,7 +50,7 @@ Recognized web cards use native callouts:
 
 ## Existing local-package users
 
-This is the unified successor to the local `compact-rich-paste`, `relative-scroll-lock`, and `native-table-resize` extensions, and the `wider-note`, `prompt-handbook-code`, and `project-progress-dashboard` CSS snippets. Disable those entries to avoid duplicate handling. The unified plugin imports old table widths once if their data file exists in the current vault; the old file is retained.
+This is the unified successor to the local `49-notion-gpt` package, the `compact-rich-paste`, `relative-scroll-lock`, and `native-table-resize` extensions, and the `wider-note`, `prompt-handbook-code`, and `project-progress-dashboard` CSS snippets. Disable those entries to avoid duplicate handling. The public plugin ID is `fortynine-notion-gpt`. It imports old table widths once from the local unified package or standalone table extension if their data file exists in the current vault; the old file is retained.
 
 Prompt-handbook styling is scoped to the `prompt-handbook` CSS class. Dashboard styling is scoped to `project-progress-dashboard`. Folder grouping follows the original `1.1-主任务/work` convention; it only affects that matching folder tree. Other folder trees keep their own layout.
 
@@ -69,7 +69,7 @@ npm run lint
 npm run build
 ```
 
-The build emits the three release files at `dist/49-notion-gpt/`, and copies `main.js` and `styles.css` to the repository root for release verification. Runtime assets have no external dependency other than Obsidian. Sources are in `src/`, styles in `styles/`, and regression tests in `tests/`.
+The build emits the three release files at `dist/fortynine-notion-gpt/`, and copies `main.js` and `styles.css` to the repository root for release verification. Runtime assets have no external dependency other than Obsidian. Sources are in `src/`, styles in `styles/`, and regression tests in `tests/`.
 
 ## License and attribution
 

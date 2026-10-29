@@ -2,7 +2,7 @@ const {build} = require('esbuild');
 const fs = require('fs');
 const path = require('path');
 const root = path.resolve(__dirname, '..');
-const out = path.join(root, 'dist', '49-notion-gpt');
+const out = path.join(root, 'dist', 'fortynine-notion-gpt');
 async function main() {
   fs.mkdirSync(out, {recursive:true});
   await build({entryPoints:[path.join(root,'src/main.js')],bundle:true,platform:'node',format:'cjs',target:'es2022',external:['obsidian'],outfile:path.join(out,'main.js')});

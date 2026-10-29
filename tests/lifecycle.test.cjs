@@ -18,3 +18,10 @@ test('failed writes do not prevent later saves and latest state wins',async()=>{
  const h=harness(),Suite=h.load('main'),p=new Suite();p.data={version:1};p.writeQueue=Promise.resolve();const saved=[];p.saveData=async d=>{if(!saved.length){saved.push('failed');throw new Error('temporary');}saved.push(d);};
  await assert.rejects(p.saveFeature('tables',{files:{a:1}}));await p.saveFeature('tables',{files:{a:2}});assert.equal(saved[1].tables.files.a,2);
 });
+test('public package imports the original unified package data before standalone widths',async()=>{
+ const h=harness(),Suite=h.load('main'),p=new Suite();p.app=h.owner.app;
+ const legacy={version:1,tables:{version:1,files:{'unified.md':{'table':[200,300]}}}};const paths=[];
+ p.loadData=async()=>null;p.saveData=async()=>{};p.app.vault.adapter={exists:async()=>true,read:async path=>{paths.push(path);return JSON.stringify(legacy);}};
+ for(const key of ['addCommand','addRibbonIcon','addStatusBarItem','registerMarkdownPostProcessor'])p[key]=h.owner[key];
+ await p.load();await Promise.resolve();assert.equal(paths.length,1);assert.match(paths[0],/plugins\/49-notion-gpt\/data\.json$/);assert.equal(JSON.stringify(p.data.tables),JSON.stringify(legacy.tables));p.unload();
+});

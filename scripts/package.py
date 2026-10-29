@@ -6,10 +6,10 @@ version = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))['vers
 name = f'49-Obsidian统一优化包-v{version}'
 release = root.parent / 'outputs' / name
 release.mkdir(parents=True, exist_ok=True)
-plugin = release / '49-notion-gpt'
+plugin = release / 'fortynine-notion-gpt'
 plugin.mkdir(exist_ok=True)
 for filename in ('main.js', 'styles.css', 'manifest.json'):
-    shutil.copy2(root / 'dist' / '49-notion-gpt' / filename, plugin / filename)
+    shutil.copy2(root / 'dist' / 'fortynine-notion-gpt' / filename, plugin / filename)
 shutil.copy2(root / 'scripts' / 'install.ps1', release / 'install.ps1')
 shutil.copy2(root / 'README.md', release / 'README.md')
 for filename in ('README.zh-CN.md', 'LICENSE', 'CHANGELOG.md'):
@@ -28,5 +28,5 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
             z.write(file, file.relative_to(release))
 with zipfile.ZipFile(archive) as z:
     assert z.testzip() is None
-    assert {'49-notion-gpt/main.js', '49-notion-gpt/styles.css', '49-notion-gpt/manifest.json', 'install.ps1'} <= set(z.namelist())
+    assert {'fortynine-notion-gpt/main.js', 'fortynine-notion-gpt/styles.css', 'fortynine-notion-gpt/manifest.json', 'install.ps1'} <= set(z.namelist())
 print(f'{archive}\n{archive.stat().st_size:,} bytes; installable plugin + installer + source; no local data.')

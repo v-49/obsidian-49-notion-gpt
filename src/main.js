@@ -11,11 +11,16 @@ module.exports = class FortyNineSuite extends Plugin {
     if (this.stopped) return;
     // Import existing local column widths once. No user notes go into releases.
     if (!this.data.tables) {
-      const path = `${this.app.vault.configDir}/plugins/native-table-resize/data.json`;
-      if (await this.app.vault.adapter.exists(path)) {
+      for (const legacy of ['49-notion-gpt', 'native-table-resize']) {
+        const path = `${this.app.vault.configDir}/plugins/${legacy}/data.json`;
+        if (!(await this.app.vault.adapter.exists(path))) continue;
         try {
           const old = JSON.parse(await this.app.vault.adapter.read(path));
-          if (old.version === 1 && old.files) await this.saveFeature('tables', old);
+          const tables = old.tables || old;
+          if (tables.version === 1 && tables.files) {
+            await this.saveFeature('tables', tables);
+            break;
+          }
         } catch (error) {
           console.error('49: table-width migration failed', error);
           new Notice('49：旧表格列宽未能读取，原数据已保留。');
